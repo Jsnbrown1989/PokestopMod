@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "pokestopmod",
+  "version": "1.0.0",
+  "name": "Pokéstop Mod",
+  "description": "Create and manage Pokéstops with claimable rewards and cooldowns.",
+  "authors": ["Nightshade Development"],
+  "contact": {
+    "sources": ""
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.pokestopmod.PokestopMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.9",
+    "fabric": "*",
+    "minecraft": "1.21.1",
+    "luckperms": "*",
+    "fabric-api": ">=0.107.0"
+  }
+}

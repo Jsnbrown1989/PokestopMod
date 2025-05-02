@@ -1,0 +1,56 @@
+{
+  "tier1": {
+    "items": [
+      {
+        "weight": 70,
+        "id": "minecraft:apple"
+      },
+      {
+        "weight": 30,
+        "id": "minecraft:gold_ingot"
+      }
+    ],
+    "commands": [
+      "give {player} minecraft:cookie 2"
+    ],
+    "globalCommands": [
+      "say {player} claimed a Tier 1 Pokéstop!"
+    ]
+  },
+  "tier2": {
+    "items": [
+      {
+        "weight": 60,
+        "id": "minecraft:iron_ingot"
+      },
+      {
+        "weight": 40,
+        "id": "minecraft:golden_apple"
+      }
+    ],
+    "commands": [
+      "give {player} minecraft:diamond 1"
+    ],
+    "globalCommands": [
+      "say {player} claimed a Tier 2 Pokéstop!"
+    ]
+  },
+  "tier3": {
+    "items": [
+      {
+        "weight": 90,
+        "id": "minecraft:diamond"
+      },
+      {
+        "weight": 10,
+        "id": "minecraft:totem_of_undying"
+      }
+    ],
+    "commands": [
+      "give {player} minecraft:nether_star 1"
+    ],
+    "globalCommands": [
+      "say {player} claimed a Tier 3 Pokéstop!"
+    ]
+  }
+}

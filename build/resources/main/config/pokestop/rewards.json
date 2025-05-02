@@ -1,0 +1,38 @@
+{
+  "tier1": {
+    "items": [
+      "minecraft:apple",
+      "minecraft:stick"
+    ],
+    "commands": [
+      "give {player} minecraft:cookie 2"
+    ],
+    "globalCommands": [
+      "say {player} claimed a Tier 1 Pokéstop!"
+    ]
+  },
+  "tier2": {
+    "items": [
+      "minecraft:iron_ingot",
+      "minecraft:golden_apple"
+    ],
+    "commands": [
+      "give {player} minecraft:emerald 3"
+    ],
+    "globalCommands": [
+      "say {player} claimed a Tier 2 Pokéstop!"
+    ]
+  },
+  "tier3": {
+    "items": [
+      "minecraft:diamond",
+      "minecraft:totem_of_undying"
+    ],
+    "commands": [
+      "give {player} minecraft:nether_star 1"
+    ],
+    "globalCommands": [
+      "say {player} claimed a Tier 3 Pokéstop!"
+    ]
+  }
+}

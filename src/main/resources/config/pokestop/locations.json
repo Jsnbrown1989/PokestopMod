@@ -1,0 +1,14 @@
+{
+  "spawn-center": {
+    "name": "spawn-center",
+    "tier": 3,
+    "position": {"x": 0, "y": 64, "z": 0},
+    "radius": 5
+  },
+  "village-east": {
+    "name": "village-east",
+    "tier": 2,
+    "position": {"x": 240, "y": 70, "z": -130},
+    "radius": 7
+  }
+}

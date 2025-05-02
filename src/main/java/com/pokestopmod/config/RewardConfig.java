@@ -22,6 +22,7 @@ public class RewardConfig {
     public static void load() {
         try {
             if (!CONFIG_FILE.exists()) {
+                CONFIG_FILE.getParentFile().mkdirs();
                 saveDefaultRewards();
             }
 
@@ -33,6 +34,7 @@ public class RewardConfig {
                     int tier = Integer.parseInt(entry.getKey().replace("tier", ""));
                     RewardData data = parseRewardData(entry.getValue());
                     tierRewards.put(tier, data);
+                    PokestopMod.LOGGER.info("Loaded tier " + tier + ": " + data.weightedItems().size() + " items, " + data.commands().size() + " commands, " + data.globalCommands().size() + " globalCommands.");
                 }
             }
         } catch (Exception e) {

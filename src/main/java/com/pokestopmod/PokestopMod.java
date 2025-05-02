@@ -1,6 +1,7 @@
 package com.pokestopmod;
 
 import com.pokestopmod.commands.PokestopCommand;
+import com.pokestopmod.config.PokestopConfig;
 import com.pokestopmod.config.RewardConfig;
 import com.pokestopmod.data.PokestopManager;
 import net.fabricmc.api.ModInitializer;
@@ -18,8 +19,7 @@ public class PokestopMod implements ModInitializer {
     public void onInitialize() {
         // Load configs
         RewardConfig.load();
-        // If you have a PokestopConfig: uncomment the next line
-        // PokestopConfig.load();
+        PokestopConfig.load();
 
         pokestopManager = new PokestopManager();
 

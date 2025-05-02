@@ -12,7 +12,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -20,10 +19,10 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 public class PokestopManager {
-    private final File configFile = new File("config/pokestop/locations.json");
-    private final Map<String, Pokestop> pokestops = new HashMap<>();
+    private final File configFile = new File("config/pokestop/pokestops.json");
     private final CooldownDatabase db = new CooldownDatabase();
-    private final Map<String, Float> pokestopAngles = new HashMap<>(); // Track rotation per Pokéstop
+    private final Map<String, Pokestop> pokestops = new HashMap<>();
+    private final Map<String, Float> pokestopAngles = new HashMap<>();
 
     private boolean bonusActive = false;
     private long bonusEndTime = 0;
@@ -50,7 +49,7 @@ public class PokestopManager {
                 pokestops.putAll(loaded);
             }
         } catch (Exception e) {
-            PokestopMod.LOGGER.error("Failed to load pokestop/locations.json", e);
+            PokestopMod.LOGGER.error("Failed to load pokestops", e);
         }
     }
 
@@ -58,7 +57,7 @@ public class PokestopManager {
         try (FileWriter writer = new FileWriter(configFile)) {
             new Gson().toJson(pokestops, writer);
         } catch (Exception e) {
-            PokestopMod.LOGGER.error("Failed to save pokestop/locations.json", e);
+            PokestopMod.LOGGER.error("Failed to save pokestops", e);
         }
     }
 
@@ -114,6 +113,8 @@ public class PokestopManager {
 
         for (int i = 0; i < (3 * multiplier); i++) {
             ItemStack selected = RewardConfig.getRandomWeightedItemForTier(tier);
+            PokestopMod.LOGGER.info("Giving reward item: " + selected);
+            PokestopMod.LOGGER.info("TriggerReward: Giving item to {}: {}", player.getGameProfile().getName(), selected);
             if (!selected.isEmpty()) {
                 player.giveItemStack(selected.copy());
             }
@@ -127,7 +128,7 @@ public class PokestopManager {
             );
         }
 
-        // Global commands (always run)
+        // Global commands
         for (String command : globalCommands) {
             String parsed = command.replace("{player}", player.getGameProfile().getName());
             player.getServer().getCommandManager().executeWithPrefix(
@@ -153,7 +154,7 @@ public class PokestopManager {
 
         for (Pokestop stop : pokestops.values()) {
             double distance = stop.position.getSquaredDistance(playerPos);
-            int effectiveRadius = stop.radius + 16; // visibility buffer
+            int effectiveRadius = stop.radius + 16;
 
             if (distance <= effectiveRadius * effectiveRadius) {
                 float angle = pokestopAngles.getOrDefault(stop.name, 0.0f) + 10.0f;
@@ -195,5 +196,8 @@ public class PokestopManager {
                 }
             }
         }
+    }
+    public Map<String, Pokestop> getPokestops() {
+        return pokestops;
     }
 }

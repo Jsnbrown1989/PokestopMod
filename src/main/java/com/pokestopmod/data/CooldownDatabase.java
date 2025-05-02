@@ -1,54 +1,61 @@
 package com.pokestopmod.data;
 
-import java.sql.*;
-import java.util.*;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.pokestopmod.PokestopMod;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class CooldownDatabase {
-    private static final String DB_URL = "jdbc:sqlite:config/pokestop/cooldowns.db";
+    private static final File DB_FILE = new File("config/pokestop/cooldowns.json");
+    private final Map<String, Long> cooldowns = new HashMap<>();
+    private final Gson gson = new Gson();
 
     public CooldownDatabase() {
-        try (Connection conn = DriverManager.getConnection(DB_URL)) {
-            Statement stmt = conn.createStatement();
-            stmt.executeUpdate("""
-                CREATE TABLE IF NOT EXISTS cooldowns (
-                    player_uuid TEXT NOT NULL,
-                    pokestop_name TEXT NOT NULL,
-                    timestamp LONG NOT NULL,
-                    PRIMARY KEY (player_uuid, pokestop_name)
-                )
-            """);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        load();
+    }
+
+    private void load() {
+        try {
+            if (!DB_FILE.exists()) {
+                DB_FILE.getParentFile().mkdirs();
+                save();
+            } else {
+                Type type = new TypeToken<Map<String, Long>>() {}.getType();
+                Map<String, Long> data = gson.fromJson(new FileReader(DB_FILE), type);
+                if (data != null) {
+                    cooldowns.putAll(data);
+                }
+            }
+        } catch (Exception e) {
+            PokestopMod.LOGGER.error("Failed to load cooldown database", e);
         }
     }
 
-    public Long getLastClaim(UUID player, String pokestop) {
-        try (Connection conn = DriverManager.getConnection(DB_URL)) {
-            PreparedStatement stmt = conn.prepareStatement("""
-                SELECT timestamp FROM cooldowns WHERE player_uuid = ? AND pokestop_name = ?
-            """);
-            stmt.setString(1, player.toString());
-            stmt.setString(2, pokestop);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) return rs.getLong("timestamp");
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public void save() {
+        try (FileWriter writer = new FileWriter(DB_FILE)) {
+            gson.toJson(cooldowns, writer);
+        } catch (Exception e) {
+            PokestopMod.LOGGER.error("Failed to save cooldown database", e);
         }
-        return null;
     }
 
-    public void setClaim(UUID player, String pokestop, long timestamp) {
-        try (Connection conn = DriverManager.getConnection(DB_URL)) {
-            PreparedStatement stmt = conn.prepareStatement("""
-                INSERT OR REPLACE INTO cooldowns (player_uuid, pokestop_name, timestamp)
-                VALUES (?, ?, ?)
-            """);
-            stmt.setString(1, player.toString());
-            stmt.setString(2, pokestop);
-            stmt.setLong(3, timestamp);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public Long getLastClaim(UUID player, String pokestopName) {
+        return cooldowns.get(key(player, pokestopName));
+    }
+
+    public void setClaim(UUID player, String pokestopName, long timestamp) {
+        cooldowns.put(key(player, pokestopName), timestamp);
+        save();
+    }
+
+    private String key(UUID player, String pokestopName) {
+        return player.toString() + ":" + pokestopName;
     }
 }
